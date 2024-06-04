@@ -4,6 +4,9 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
+    _ = b.addModule("zefi", .{
+        .root_source_file = .{ .path = "src/main.zig" },
+    });
     const exe = b.addExecutable(.{
         .name = "zefi",
         .root_source_file = .{ .path = "src/main.zig" },
