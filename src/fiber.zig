@@ -153,8 +153,8 @@ const Intel_Microsoft = struct {
 
     comptime {
         asm (
-            \\.global _zefi_stack_swap
-            \\_zefi_stack_swap:
+            \\.global zefi_stack_swap
+            \\zefi_stack_swap:
             \\  pushq %gs:0x10
             \\  pushq %gs:0x08
             \\
@@ -218,8 +218,8 @@ const Intel_SysV = struct {
 
     comptime {
         asm (
-            \\.global _zefi_stack_swap
-            \\_zefi_stack_swap:
+            \\.global zefi_stack_swap
+            \\zefi_stack_swap:
             \\  pushq %rbx
             \\  pushq %rbp
             \\  pushq %r12
@@ -249,8 +249,8 @@ const Arm_64 = struct {
 
     comptime {
         asm (
-            \\.global _zefi_stack_swap
-            \\_zefi_stack_swap:
+            \\.global zefi_stack_swap
+            \\zefi_stack_swap:
             \\  stp lr, fp, [sp, #-20*8]!
             \\  stp d8, d9, [sp, #2*8]
             \\  stp d10, d11, [sp, #4*8]
