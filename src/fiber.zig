@@ -211,15 +211,20 @@ const Intel_Microsoft = struct {
     }
 };
 
+const symbol = switch (builtin.target.os.tag) {
+    .macos => "_zefi_stack_swap",
+    else => "zefi_stack_swap",
+};
+
 const Intel_SysV = struct {
     pub const word_count = 7;
 
     pub const entry_offset = word_count - 1;
 
-    // workaround for macos undefined symbol linking error
-    const under_line = if (builtin.os.tag == .macos) "_" else "";
     comptime {
-        asm (".global " ++ under_line ++ "zefi_stack_swap\n " ++ under_line ++ "zefi_stack_swap:" ++
+        asm (std.fmt.comptimePrint(
+                \\.global {[symbol]s}
+                \\{[symbol]s}:
                 \\  pushq %rbx
                 \\  pushq %rbp
                 \\  pushq %r12
@@ -238,7 +243,7 @@ const Intel_SysV = struct {
                 \\  popq %rbx
                 \\
                 \\  retq
-        );
+            , .{ .symbol = symbol }));
     }
 };
 
@@ -247,10 +252,10 @@ const Arm_64 = struct {
 
     pub const entry_offset = 0;
 
-    // workaround for macos undefined symbol linking error
-    const under_line = if (builtin.os.tag == .macos) "_" else "";
     comptime {
-        asm (".global " ++ under_line ++ "zefi_stack_swap\n " ++ under_line ++ "zefi_stack_swap:" ++
+        asm (std.fmt.comptimePrint(
+                \\.global {[symbol]s}
+                \\{[symbol]s}:
                 \\  stp lr, fp, [sp, #-20*8]!
                 \\  stp d8, d9, [sp, #2*8]
                 \\  stp d10, d11, [sp, #4*8]
@@ -279,6 +284,6 @@ const Arm_64 = struct {
                 \\  ldp lr, fp, [sp], #20*8
                 \\
                 \\  ret
-        );
+            , .{ .symbol = symbol }));
     }
 };
